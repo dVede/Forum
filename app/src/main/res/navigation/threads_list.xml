@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/threads"
+    app:startDestination="@id/threadsFragment">
+
+    <fragment
+        android:id="@+id/threadsFragment"
+        android:name="com.example.forum.ui.ThreadsFragment"
+        android:label="ThreadsFragment"
+        tools:layout="@layout/fragment_threads">
+        <action
+            android:id="@+id/actiothreadsFragmentn_threadsFragment_to_subThreadsFragment"
+            app:popUpTo="@id/threadsFragment"
+            app:popUpToInclusive="false"
+            app:destination="@id/subThreadsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/subThreadsFragment"
+        android:name="com.example.forum.ui.SubThreadsFragment"
+        android:label="SubThreadsFragment"
+        tools:layout="@layout/fragment_threads">
+        <action
+            android:id="@+id/action_subThreadsFragment_to_messageActivity"
+            app:destination="@id/messageActivity"
+            app:popUpTo="@id/threadsFragment"
+            app:popUpToInclusive="false"/>
+    </fragment>
+    <activity
+        android:id="@+id/messageActivity"
+        android:name="com.example.forum.ui.MessageActivity"
+        android:label="activity_message"
+        tools:layout="@layout/activity_message" >
+        <argument
+            android:name="threadName"
+            app:argType="string" />
+    </activity>
+</navigation>

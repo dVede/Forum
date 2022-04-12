@@ -24,7 +24,7 @@ class RegisterFragment: FragmentPattern<RegisterViewModel, RegisterFragmentBindi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = getBinding(inflater, container)
+        _binding = getBinding(inflater, container)
         binding.lifecycleOwner = this
         binding.registerViewModel = viewModel
         return binding.root

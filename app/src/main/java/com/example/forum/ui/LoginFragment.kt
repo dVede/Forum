@@ -27,7 +27,7 @@ class LoginFragment: FragmentPattern<LoginViewModel, LoginFragmentBinding, AuthR
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = getBinding(inflater, container)
+        _binding = getBinding(inflater, container)
         binding.lifecycleOwner = this
         binding.loginViewModel = viewModel
         return binding.root

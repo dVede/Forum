@@ -12,7 +12,8 @@ import com.example.forum.repository.BaseRepository
 
 abstract class FragmentPattern<VM: ViewModel, B: ViewBinding, R: BaseRepository>: Fragment() {
 
-    protected lateinit var binding: B
+    protected var _binding: B? = null
+    protected val binding get() = _binding!!
     protected abstract val viewModel: VM
 
     override fun onCreateView(
@@ -20,10 +21,15 @@ abstract class FragmentPattern<VM: ViewModel, B: ViewBinding, R: BaseRepository>
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = getBinding(inflater, container)
+        _binding = getBinding(inflater, container)
         return binding.root
     }
 
     abstract fun getBinding(inflater: LayoutInflater, container: ViewGroup?): B
     abstract fun getRepository(): R
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

@@ -37,10 +37,8 @@ class ThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBinding
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         viewModel.hierarchyResponse.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Failure ->
-                    handleApiError(it, binding.root)
-                is Resource.Success ->
-                    adapterThreads.submitList(it.value.hierarchy.keys.toList())
+                is Resource.Failure -> handleApiError(it)
+                is Resource.Success -> adapterThreads.submitList(it.value.hierarchy.keys.toList())
             }
             swipeRefreshLayout.isRefreshing = false
             shimmer.stopShimmer()
@@ -64,11 +62,6 @@ class ThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBinding
     ): FragmentThreadsBinding =
         FragmentThreadsBinding.inflate(inflater, container, false)
 
-    override fun getViewModel(): Class<ThreadsViewModel> =
-        ThreadsViewModel::class.java
-
     override fun getRepository(): UserRepository =
         UserRepository(RetrofitClient().getApi(requireContext()))
-
-
 }

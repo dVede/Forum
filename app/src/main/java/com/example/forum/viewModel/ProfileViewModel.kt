@@ -15,13 +15,9 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
     val logoutResponse: LiveData<Resource<ResponseBody>>
         get() = _logoutResponse
 
-    private fun logout() {
+    fun logout() {
         viewModelScope.launch {
             _logoutResponse.value = repository.logout() as Resource<ResponseBody>
         }
-    }
-
-    fun onButtonClick(view: View) {
-        logout()
     }
 }

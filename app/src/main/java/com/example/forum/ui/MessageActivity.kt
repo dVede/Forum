@@ -26,11 +26,13 @@ class MessageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val args: MessageActivityArgs by navArgs()
-        supportActionBar?.title = args.threadName
         binding.lifecycleOwner = this
         binding.messageViewModel = viewModel
         setContentView(binding.root)
+
+        val args: MessageActivityArgs by navArgs()
+        supportActionBar?.title = args.threadName
+
         val adapter = MessageAdapter()
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
@@ -53,22 +55,20 @@ class MessageActivity : AppCompatActivity() {
         })
         adapter.registerAdapterDataObserver(observer)
         recyclerView.layoutManager = linearManager
+
         viewModel.messagesResponse.observe(this) {
             when (it) {
                 is Resource.Failure -> {
-                    handleApiError(it, binding.root)
+                    handleApiError(it)
                     finish()
                 }
                 is Resource.Success -> adapter.submitList(it.value.messages)
-
             }
         }
         viewModel.messageSendResponse.observe(this) {
             when (it) {
-                is Resource.Failure ->
-                    handleApiError(it, binding.root)
-                is Resource.Success ->
-                    viewModel.messageLiveData.value = ""
+                is Resource.Failure -> handleApiError(it)
+                is Resource.Success -> viewModel.messageLiveData.value = ""
             }
             binding.sendButton.isClickable = true
         }

@@ -16,37 +16,29 @@ import com.example.forum.viewModel.ProfileViewModel
 import com.example.forum.viewModel.ViewModelFactory
 import kotlinx.coroutines.launch
 
-class ProfileFragment : FragmentPattern<ProfileViewModel, FragmentProfileBinding, UserRepository>() {
+class ProfileFragment : FragmentPattern<ProfileViewModel, FragmentProfileBinding, UserRepository>(),
+    View.OnClickListener{
 
     override val viewModel: ProfileViewModel by viewModels { ViewModelFactory(getRepository()) }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = getBinding(inflater, container)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.profileViewModel = viewModel
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.logoutResponse.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Success ->
-                    lifecycleScope.launch {
-                        val userPreferences = UserPreferences(requireContext())
-                        userPreferences.clear()
-                        val intent = Intent(context, AuthActivity::class.java)
-                        startActivity(intent)
-                        activity?.finish()
-                    }
-                is Resource.Failure ->
-                    handleApiError(it, binding.root)
+                is Resource.Success -> lifecycleScope.launch { logout() }
+                is Resource.Failure -> handleApiError(it)
             }
+            binding.logoutButton.isEnabled = true
         }
+        binding.logoutButton.setOnClickListener(this)
+    }
+
+    private suspend fun logout() {
+        val userPreferences = UserPreferences(requireContext())
+        userPreferences.clear()
+        val intent = Intent(context, AuthActivity::class.java)
+        startActivity(intent)
+        activity?.finish()
     }
 
     override fun getBinding(
@@ -55,9 +47,11 @@ class ProfileFragment : FragmentPattern<ProfileViewModel, FragmentProfileBinding
     ): FragmentProfileBinding =
         FragmentProfileBinding.inflate(inflater, container, false)
 
-    override fun getViewModel(): Class<ProfileViewModel> =
-        ProfileViewModel::class.java
-
     override fun getRepository(): UserRepository =
         UserRepository(RetrofitClient().getApi(requireContext()))
+
+    override fun onClick(p0: View?) {
+        binding.logoutButton.isEnabled = false
+        viewModel.logout()
+    }
 }

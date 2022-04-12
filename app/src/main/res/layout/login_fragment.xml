@@ -81,7 +81,6 @@
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/rd_button"
                 android:enabled="@{loginViewModel.isLoginFormValidMediator()}"
-                android:onClick="@{loginViewModel::onButtonClick}"
                 android:text="@string/login"
                 android:textSize="16sp"
                 android:textStyle="bold"

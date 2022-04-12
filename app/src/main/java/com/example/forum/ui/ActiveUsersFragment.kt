@@ -38,7 +38,7 @@ class ActiveUsersFragment : FragmentPattern<ActiveUsersViewModel, FragmentActive
         viewModel.getUsersResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Failure ->
-                    handleApiError(it, binding.root)
+                    handleApiError(it)
                 is Resource.Success ->
                     adapter.submitList(it.value.users)
             }
@@ -60,9 +60,6 @@ class ActiveUsersFragment : FragmentPattern<ActiveUsersViewModel, FragmentActive
         container: ViewGroup?
     ): FragmentActiveUsersBinding =
         FragmentActiveUsersBinding.inflate(inflater, container, false)
-
-    override fun getViewModel(): Class<ActiveUsersViewModel> =
-        ActiveUsersViewModel::class.java
 
     override fun getRepository(): UserRepository =
         UserRepository(RetrofitClient().getApi(requireContext()))

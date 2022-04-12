@@ -17,7 +17,8 @@ import com.example.forum.viewModel.LoginViewModel
 import com.example.forum.viewModel.ViewModelFactory
 import kotlinx.coroutines.launch
 
-class LoginFragment: FragmentPattern<LoginViewModel, LoginFragmentBinding, AuthRepository>() {
+class LoginFragment: FragmentPattern<LoginViewModel, LoginFragmentBinding, AuthRepository>(),
+    View.OnClickListener {
 
     override val viewModel: LoginViewModel by viewModels { ViewModelFactory(getRepository() ) }
 
@@ -41,20 +42,26 @@ class LoginFragment: FragmentPattern<LoginViewModel, LoginFragmentBinding, AuthR
                         UserPreferences(requireContext()).saveAuthToken(it.value.jwt)
                         val intent = Intent(context, MainMenuActivity::class.java)
                         startActivity(intent)
-                        activity?.finish()
+                        requireActivity().finish()
                     }
                 }
-                is Resource.Failure -> handleApiError(it, binding.root)
+                is Resource.Failure -> handleApiError(it)
             }
+            binding.loginButton.isEnabled = true
         }
+        binding.loginButton.setOnClickListener(this)
     }
-
-    override fun getViewModel(): Class<LoginViewModel> =
-        LoginViewModel::class.java
 
     override fun getRepository(): AuthRepository =
         AuthRepository(RetrofitClient().getApi(requireContext()))
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): LoginFragmentBinding =
         LoginFragmentBinding.inflate(inflater, container, false)
+
+    override fun onClick(p0: View?) {
+        binding.loginButton.isEnabled = false
+        val username = binding.username.text.toString().trim()
+        val password = binding.password.text.toString().trim()
+        viewModel.login(username, password)
+    }
 }

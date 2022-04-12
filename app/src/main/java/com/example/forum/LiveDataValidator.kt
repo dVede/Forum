@@ -18,7 +18,6 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
                 return false
             }
         }
-
         emitErrorMessage(null)
         return true
     }

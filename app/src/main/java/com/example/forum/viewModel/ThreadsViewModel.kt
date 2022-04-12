@@ -20,9 +20,4 @@ class ThreadsViewModel(private val repository: UserRepository): ViewModel() {
             _hierarchyResponse.value = repository.getHierarchy() as Resource<OkHierarchy>
         }
     }
-
-    override fun onCleared() {
-        println("was here 1")
-        super.onCleared()
-    }
 }

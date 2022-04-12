@@ -31,11 +31,11 @@ class SubThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBind
         val list: List<String>? = when (val response = viewModel.hierarchyResponse.value) {
             is Resource.Success -> response.value.hierarchy[viewModel.thread]
             is Resource.Failure -> {
-                Snackbar.make(view, "No internet connection", Snackbar.LENGTH_SHORT).show()
+                handleApiError(response)
                 emptyList()
             }
             else -> {
-                Snackbar.make(view, "No internet connection", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, "Something went wrong", Snackbar.LENGTH_SHORT).show()
                 emptyList()
             }
         }
@@ -48,7 +48,7 @@ class SubThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBind
 
         viewModel.hierarchyResponse.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Failure -> handleApiError(it, binding.root)
+                is Resource.Failure -> handleApiError(it)
                 is Resource.Success -> {
                     val threads = it.value.hierarchy[viewModel.thread] ?: emptyList()
                     adapter.submitList(threads)
@@ -76,9 +76,6 @@ class SubThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBind
         container: ViewGroup?
     ): FragmentThreadsBinding =
         FragmentThreadsBinding.inflate(inflater, container, false)
-
-    override fun getViewModel(): Class<ThreadsViewModel> =
-        ThreadsViewModel::class.java
 
     override fun getRepository(): UserRepository =
         UserRepository(RetrofitClient().getApi(requireContext()))

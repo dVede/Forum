@@ -25,10 +25,5 @@ abstract class FragmentPattern<VM: ViewModel, B: ViewBinding, R: BaseRepository>
     }
 
     abstract fun getBinding(inflater: LayoutInflater, container: ViewGroup?): B
-    abstract fun getViewModel(): Class<VM>
     abstract fun getRepository(): R
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

@@ -108,7 +108,6 @@
                     android:layout_marginBottom="50dp"
                     android:background="@drawable/rd_button"
                     android:enabled="@{registerViewModel.isLoginFormValidMediator()}"
-                    android:onClick="@{registerViewModel::onButtonClick}"
                     android:text="@string/register"
                     android:textSize="16sp"
                     android:textStyle="bold"

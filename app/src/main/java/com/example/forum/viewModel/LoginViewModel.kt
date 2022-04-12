@@ -55,7 +55,7 @@ class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
     val loginResponse: LiveData<Resource<OkAuth>>
         get() = _loginResponse
 
-    private fun login(username: String, pwd: String) {
+    fun login(username: String, pwd: String) {
         viewModelScope.launch {
             _loginResponse.value = repository.login(username,pwd)
         }

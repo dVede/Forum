@@ -14,7 +14,8 @@ import com.example.forum.viewModel.RegisterViewModel
 import com.example.forum.viewModel.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
-class RegisterFragment: FragmentPattern<RegisterViewModel, RegisterFragmentBinding, AuthRepository>() {
+class RegisterFragment: FragmentPattern<RegisterViewModel, RegisterFragmentBinding, AuthRepository>(),
+    View.OnClickListener{
 
     override val viewModel: RegisterViewModel by viewModels { ViewModelFactory(getRepository()) }
 
@@ -35,19 +36,23 @@ class RegisterFragment: FragmentPattern<RegisterViewModel, RegisterFragmentBindi
             when(it) {
                 is Resource.Success ->
                     Snackbar.make(view, "Account created", Snackbar.LENGTH_SHORT).show()
-                is Resource.Failure ->
-                    handleApiError(it, binding.root)
+                is Resource.Failure -> handleApiError(it)
             }
             binding.registerButton.isEnabled = true
         }
+        binding.registerButton.setOnClickListener(this)
     }
-
-    override fun getViewModel(): Class<RegisterViewModel> =
-        RegisterViewModel::class.java
 
     override fun getRepository(): AuthRepository =
         AuthRepository(RetrofitClient().getApi(requireContext()))
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): RegisterFragmentBinding =
         RegisterFragmentBinding.inflate(inflater, container, false)
+
+    override fun onClick(p0: View?) {
+        binding.registerButton.isEnabled = false
+        val username = binding.username.text.toString().trim()
+        val password = binding.password.text.toString().trim()
+        viewModel.register(username, password)
+    }
 }

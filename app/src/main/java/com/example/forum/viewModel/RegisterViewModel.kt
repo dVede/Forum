@@ -72,15 +72,9 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
     val registerResponse: LiveData<Resource<ResponseBody>>
         get() = _registerResponse
 
-    private fun register(username: String, pwd: String) {
+    fun register(username: String, pwd: String) {
         viewModelScope.launch {
             _registerResponse.value = repository.register(username, pwd) as Resource<ResponseBody>
         }
-    }
-
-    fun onButtonClick(view: View) {
-        val username = usernameLiveData.value
-        val password = passwordLiveData.value
-        register(username!!, password!!)
     }
 }

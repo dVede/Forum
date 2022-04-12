@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/threadsFragment"
         android:name="com.example.forum.ui.ThreadsFragment"
-        android:label="ThreadsFragment"
+        android:label="Threads "
         tools:layout="@layout/fragment_threads">
         <action
             android:id="@+id/actiothreadsFragmentn_threadsFragment_to_subThreadsFragment"
@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/subThreadsFragment"
         android:name="com.example.forum.ui.SubThreadsFragment"
-        android:label="SubThreadsFragment"
+        android:label="Sub Threads"
         tools:layout="@layout/fragment_threads">
         <action
             android:id="@+id/action_subThreadsFragment_to_messageActivity"

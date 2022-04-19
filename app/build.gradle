@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.forum"
-        minSdk 23
+        minSdk 24
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField "String", "API_URL", "\"https://forum-proj.duckdns.org/\""
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "API_URL", "\"https://forum-proj.duckdns.org/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -61,4 +67,5 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
 }

@@ -10,8 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Forum"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.Forum">
         <activity
             android:name=".ui.MessageActivity"
             android:exported="false" />

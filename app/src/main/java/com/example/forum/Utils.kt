@@ -1,45 +1,42 @@
 package com.example.forum
 
-import android.app.Activity
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.forum.model.Resource
 import com.example.forum.ui.LoginFragment
 import com.google.android.material.snackbar.Snackbar
+import java.util.concurrent.TimeUnit
 
-const val DEFAULT_PORT = 8080
-const val DEFAULT_HOST = "26.11.70.132"
-
-fun Fragment.handleApiError(failure: Resource.Failure) {
-    val msg = when {
-        failure.isNetworkError ->
-            Snackbar.make(requireView(), "Network error", Snackbar.LENGTH_SHORT)
+fun Fragment.handleApiError(failure: Resource.Failure, retry: (() -> Unit)? = null) {
+    when {
+        failure.isNetworkError -> requireView().snackbar("Network error", retry)
         failure.errorCode == 401 ->
-            if (this is LoginFragment) {
-                Snackbar.make(requireView(), "Wrong username or password", Snackbar.LENGTH_SHORT)
-            }
-            else {
-                Snackbar.make(requireView(), "Unauthorized response", Snackbar.LENGTH_SHORT)
-            }
-        else ->
-            Snackbar.make(requireView(), failure.errorBody?.string().toString(), Snackbar.LENGTH_SHORT)
+            if (this is LoginFragment) requireView().snackbar("Wrong username or password")
+
+            else requireView().snackbar("Unauthorized response")
+
+        else -> requireView().snackbar(failure.errorBody?.string().toString())
     }
-    msg.show()
 }
 
-fun AppCompatActivity.handleApiError(failure: Resource.Failure) {
-    val msg = when {
-        failure.isNetworkError ->
-            Snackbar.make(findViewById(android.R.id.content),
-                "Network error", Snackbar.LENGTH_SHORT)
-        failure.errorCode == 401 ->
-            Snackbar.make(findViewById(android.R.id.content),
-                "Unauthorized response", Snackbar.LENGTH_SHORT)
-        else ->
-            Snackbar.make(findViewById(android.R.id.content),
-                failure.errorBody?.string().toString(), Snackbar.LENGTH_SHORT)
+fun AppCompatActivity.handleApiError(failure: Resource.Failure, retry: (() -> Unit)? = null) {
+    val view: View = findViewById(android.R.id.content)
+    when {
+        failure.isNetworkError -> view.snackbar("Network error", retry)
+        failure.errorCode == 401 -> view.snackbar("Unauthorized response")
+        else -> view.snackbar(failure.errorBody?.string().toString())
     }
-    msg.show()
+}
+
+fun View.snackbar(msg: String, action: (() -> Unit)? = null) {
+    val snackbar = Snackbar.make(this, msg, Snackbar.LENGTH_INDEFINITE).setDuration(10000)
+    action?.let {
+        snackbar.setAction("Retry") {
+            it()
+        }
+    }
+    snackbar.show()
 }
 
 

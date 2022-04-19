@@ -37,10 +37,8 @@ class ActiveUsersFragment : FragmentPattern<ActiveUsersViewModel, FragmentActive
 
         viewModel.getUsersResponse.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Failure ->
-                    handleApiError(it)
-                is Resource.Success ->
-                    adapter.submitList(it.value.users)
+                is Resource.Failure -> handleApiError(it) { viewModel.getUsers() }
+                is Resource.Success -> adapter.submitList(it.value.users)
             }
             swipeRefreshLayout.isRefreshing = false
             shimmer.stopShimmer()

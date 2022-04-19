@@ -37,7 +37,7 @@ class ThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBinding
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         viewModel.hierarchyResponse.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Failure -> handleApiError(it)
+                is Resource.Failure -> handleApiError(it) { viewModel.getHierarchy() }
                 is Resource.Success -> adapterThreads.submitList(it.value.hierarchy.keys.toList())
             }
             swipeRefreshLayout.isRefreshing = false

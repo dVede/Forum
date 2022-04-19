@@ -9,13 +9,13 @@ import okhttp3.Response
 
 class AuthInterceptor(context: Context): Interceptor {
     private val userPreferences: UserPreferences = UserPreferences(context)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val requestBuilder = chain.request().newBuilder()
-        runBlocking {
-            userPreferences.authToken.first().also {
-                requestBuilder.addHeader("Authorization", "Bearer $it")
-            }
-        }
-        return chain.proceed(requestBuilder.build())
+    override fun intercept(chain: Interceptor.Chain): Response = chain.run {
+        proceed(
+            request()
+                .newBuilder()
+                .addHeader("Authorization", "Bearer " + runBlocking {
+                    userPreferences.authToken.first()
+                }).build()
+        )
     }
 }

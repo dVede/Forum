@@ -30,8 +30,7 @@ class SubThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBind
         shimmer.startShimmer()
         val list: List<String>? = when (val response = viewModel.hierarchyResponse.value) {
             is Resource.Success -> response.value.hierarchy[viewModel.thread]
-            is Resource.Failure -> {
-                handleApiError(response)
+            is Resource.Failure -> { handleApiError(response) { viewModel.getHierarchy() }
                 emptyList()
             }
             else -> {
@@ -50,7 +49,7 @@ class SubThreadsFragment : FragmentPattern<ThreadsViewModel, FragmentThreadsBind
             when (it) {
                 is Resource.Failure -> handleApiError(it)
                 is Resource.Success -> {
-                    val threads = it.value.hierarchy[viewModel.thread] ?: emptyList()
+                    val threads = it.value.hierarchy[viewModel.thread]
                     adapter.submitList(threads)
                 }
             }

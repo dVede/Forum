@@ -59,33 +59,21 @@ class MessageActivity : AppCompatActivity() {
         viewModel.messagesResponse.observe(this) {
             when (it) {
                 is Resource.Failure -> {
-                    handleApiError(it)
-                    finish()
+                    viewModel.job.cancel()
+                    handleApiError(it) { viewModel.job = viewModel.updateMessages(args.threadName) }
                 }
                 is Resource.Success -> adapter.submitList(it.value.messages)
             }
         }
         viewModel.messageSendResponse.observe(this) {
             when (it) {
-                is Resource.Failure -> handleApiError(it)
+                is Resource.Failure -> handleApiError(it) { sendMessage(args.threadName) }
                 is Resource.Success -> viewModel.messageLiveData.value = ""
             }
             binding.sendButton.isClickable = true
         }
         binding.sendButton.setOnClickListener {
-            val msg = viewModel.messageLiveData.value
-            when {
-                msg.isNullOrBlank() -> {
-                    binding.editText.error = "Empty"
-                    return@setOnClickListener
-                }
-                msg.trim().length > 300 -> {
-                    binding.editText.error = "Message too long (300)"
-                    return@setOnClickListener
-                }
-            }
-            viewModel.send(MessageModel(args.threadName, msg!!.trim()))
-            binding.sendButton.isClickable = false
+            sendMessage(args.threadName)
         }
 
         viewModel.job = viewModel.updateMessages(args.threadName)
@@ -93,4 +81,21 @@ class MessageActivity : AppCompatActivity() {
 
     private fun getRepository(): UserRepository =
         UserRepository(RetrofitClient().getApi(this))
+
+    private fun sendMessage(threadName: String) {
+        val msg = viewModel.messageLiveData.value
+        when {
+            msg.isNullOrBlank() -> {
+                binding.editText.error = "Empty"
+                return
+            }
+            msg.trim().length > 300 -> {
+                binding.editText.error = "Message too long (300)"
+                return
+            }
+            else -> binding.editText.error = ""
+        }
+        viewModel.send(MessageModel(threadName, msg.trim()))
+        binding.sendButton.isClickable = false
+    }
 }

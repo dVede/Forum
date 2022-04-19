@@ -26,7 +26,7 @@ class ProfileFragment : FragmentPattern<ProfileViewModel, FragmentProfileBinding
         viewModel.logoutResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> lifecycleScope.launch { logout() }
-                is Resource.Failure -> handleApiError(it)
+                is Resource.Failure -> handleApiError(it) { onClick(binding.logoutButton) }
             }
             binding.logoutButton.isEnabled = true
         }
